@@ -79,7 +79,6 @@ namespace SAPConsoleApp
 
             // Create the function call
             IRfcFunction function = repo.CreateFunction("STFC_CONNECTION");
-            //IRfcFunction function = repo.CreateFunction("STFC_CONNECTION123456");
 
             // Set the import parameters
             function.SetValue("REQUTEXT", "Hello World :)!");
