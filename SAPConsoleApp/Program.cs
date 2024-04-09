@@ -20,33 +20,39 @@ namespace SAPConsoleApp
             {
                 if ("PRD_000".Equals(destinationName))
                 {
-                    RfcConfigParameters parms = new RfcConfigParameters();
+                    RfcConfigParameters cparams = new RfcConfigParameters();
 
                     /* Default connection details */
-
-                    parms.Add(RfcConfigParameters.PoolSize, ConfigurationManager.AppSettings.Get("PoolSize"));
-                    parms.Add(RfcConfigParameters.Language, ConfigurationManager.AppSettings.Get("Language"));
+                    cparams.Add(RfcConfigParameters.PoolSize, ConfigurationManager.AppSettings.Get("PoolSize"));
+                    cparams.Add(RfcConfigParameters.Language, ConfigurationManager.AppSettings.Get("Language"));
 
                     /* SAP connection details */
-                    parms.Add(RfcConfigParameters.AppServerHost, ConfigurationManager.AppSettings.Get("AppServerHost"));
-                    parms.Add(RfcConfigParameters.SystemNumber, ConfigurationManager.AppSettings.Get("SystemNumber"));
-                    parms.Add(RfcConfigParameters.Client, ConfigurationManager.AppSettings.Get("Client"));
-                    parms.Add(RfcConfigParameters.SystemID, ConfigurationManager.AppSettings.Get("SystemID"));
+                    cparams.Add(RfcConfigParameters.AppServerHost, ConfigurationManager.AppSettings.Get("AppServerHost"));
+                    cparams.Add(RfcConfigParameters.SystemNumber, ConfigurationManager.AppSettings.Get("SystemNumber"));
+                    cparams.Add(RfcConfigParameters.Client, ConfigurationManager.AppSettings.Get("Client"));
+                    cparams.Add(RfcConfigParameters.SystemID, ConfigurationManager.AppSettings.Get("SystemID"));
 
                     /* SAP username & password Auth */
-                    parms.Add(RfcConfigParameters.User, ConfigurationManager.AppSettings.Get("User"));
-                    parms.Add(RfcConfigParameters.Password, ConfigurationManager.AppSettings.Get("Password"));
+                    //cparams.Add(RfcConfigParameters.User, ConfigurationManager.AppSettings.Get("User"));
+                    //cparams.Add(RfcConfigParameters.Password, ConfigurationManager.AppSettings.Get("Password"));
+                    //cparams.Add(RfcConfigParameters.User, "");
+                    //cparams.Add(RfcConfigParameters.Password, "");
 
                     /* SAP SNC Auth */
-                    parms.Add(RfcConfigParameters.SncQOP, ConfigurationManager.AppSettings.Get("SncQOP"));
-                    parms.Add(RfcConfigParameters.SncMode, ConfigurationManager.AppSettings.Get("SncMode"));
-                    parms.Add(RfcConfigParameters.SncPartnerName, ConfigurationManager.AppSettings.Get("SncPartnerName")); /* SAP Subject name on the server itself. */
-                    parms.Add(RfcConfigParameters.SncMyName, ConfigurationManager.AppSettings.Get("SncMyName")); /* SAP certificate subject name of the end user. */
-                    parms.Add(RfcConfigParameters.SncLibraryPath, ConfigurationManager.AppSettings.Get("SncLibraryPath"));
+                    cparams.Add(RfcConfigParameters.SncQOP, ConfigurationManager.AppSettings.Get("SncQOP"));
+                    cparams.Add(RfcConfigParameters.SncMode, ConfigurationManager.AppSettings.Get("SncMode"));
+                    cparams.Add(RfcConfigParameters.SncPartnerName, ConfigurationManager.AppSettings.Get("SncPartnerName")); /* SAP Subject name on the server itself. */
+                    cparams.Add(RfcConfigParameters.SncMyName, ConfigurationManager.AppSettings.Get("SncMyName")); /* SAP certificate subject name of the end user. */
+                    cparams.Add(RfcConfigParameters.SncLibraryPath, ConfigurationManager.AppSettings.Get("SncLibraryPath"));
+                    cparams.Add(RfcConfigParameters.SncSSO, ConfigurationManager.AppSettings.Get("SncSSO"));
+                    cparams.Add(RfcConfigParameters.X509Certificate, ConfigurationManager.AppSettings.Get("X509Certificate"));
+                    cparams.Add(RfcConfigParameters.Trace, "2");
 
-                    //parms.Add(RfcConfigParameters.Trace, "2");
+                    //RfcTrace.DefaultTraceLevel = RfcTracing.Level2;
 
-                    return parms;
+                    RfcTrace.TraceDirectory = "C:\\sap\\nco_trace_logs";
+
+                    return cparams;
                 }
                 else
                 {
@@ -67,6 +73,9 @@ namespace SAPConsoleApp
 
             // Create the connection to SAP
             RfcDestination destination = RfcDestinationManager.GetDestination("PRD_000");
+            destination.Ping();
+
+            // Get the repository and create the function
             RfcRepository repo = null;
             try
             {
@@ -79,6 +88,7 @@ namespace SAPConsoleApp
 
             // Create the function call
             IRfcFunction function = repo.CreateFunction("STFC_CONNECTION");
+
 
             // Set the import parameters
             function.SetValue("REQUTEXT", "Hello World :)!");
